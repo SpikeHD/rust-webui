@@ -143,29 +143,31 @@ impl Default for Window {
 impl Window {
     pub fn new() -> Window {
         let id = new_window();
-        Window { id, extensions: vec![] }
+        Window {
+            id,
+            extensions: vec![],
+        }
     }
 
     pub fn from_id(id: usize) -> Window {
-        Window { id, extensions: vec![] }
+        Window {
+            id,
+            extensions: vec![],
+        }
     }
 
     fn set_extensions(&self) {
-      let c_strings: Vec<CString> = self.extensions.iter()
-          .map(|s| CString::new(s.as_str()).expect("CString::new failed"))
-          .collect();
+        let c_strings: Vec<CString> = self
+            .extensions
+            .iter()
+            .map(|s| CString::new(s.as_str()).expect("CString::new failed"))
+            .collect();
 
-      let mut c_ptrs: Vec<*const c_char> = c_strings.iter()
-          .map(|s| s.as_ptr())
-          .collect();
+        let mut c_ptrs: Vec<*const c_char> = c_strings.iter().map(|s| s.as_ptr()).collect();
 
-      unsafe {
-        webui_set_extensions(
-          self.id,
-          c_ptrs.as_mut_ptr(),
-          c_ptrs.len()
-        );
-      }
+        unsafe {
+            webui_set_extensions(self.id, c_ptrs.as_mut_ptr(), c_ptrs.len());
+        }
     }
 
     pub fn show(&self, content: impl AsRef<str>) -> bool {
@@ -208,14 +210,14 @@ impl Window {
     }
 
     pub fn add_extension(&mut self, path: impl AsRef<str>) {
-      self.extensions.push(path.as_ref().to_string());
+        self.extensions.push(path.as_ref().to_string());
     }
 
     pub fn best_browser(&self) -> WebUIBrowser {
-      unsafe {
-        let browser = webui_get_best_browser(self.id);
-        WebUIBrowser::from_usize(browser)
-      }
+        unsafe {
+            let browser = webui_get_best_browser(self.id);
+            WebUIBrowser::from_usize(browser)
+        }
     }
 }
 
