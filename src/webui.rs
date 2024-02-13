@@ -50,6 +50,28 @@ pub enum WebUIBrowser {
     ChromiumBased,
 }
 
+// Implement into<usize>
+impl WebUIBrowser {
+    pub fn from_usize(value: usize) -> WebUIBrowser {
+        match value {
+            0 => WebUIBrowser::NoBrowser,
+            1 => WebUIBrowser::AnyBrowser,
+            2 => WebUIBrowser::Chrome,
+            3 => WebUIBrowser::Firefox,
+            4 => WebUIBrowser::Edge,
+            5 => WebUIBrowser::Safari,
+            6 => WebUIBrowser::Chromium,
+            7 => WebUIBrowser::Opera,
+            8 => WebUIBrowser::Brave,
+            9 => WebUIBrowser::Vivaldi,
+            10 => WebUIBrowser::Epic,
+            11 => WebUIBrowser::Yandex,
+            12 => WebUIBrowser::ChromiumBased,
+            _ => WebUIBrowser::NoBrowser,
+        }
+    }
+}
+
 // Runtimes
 pub enum WebUIRuntime {
     None = 0,
@@ -108,6 +130,8 @@ impl Event {
 
 pub struct Window {
     pub id: usize,
+    /// Paths to extension files
+    pub extensions: Vec<String>,
 }
 
 impl Default for Window {
@@ -119,18 +143,38 @@ impl Default for Window {
 impl Window {
     pub fn new() -> Window {
         let id = new_window();
-        Window { id }
+        Window { id, extensions: vec![] }
     }
 
     pub fn from_id(id: usize) -> Window {
-        Window { id }
+        Window { id, extensions: vec![] }
+    }
+
+    fn set_extensions(&self) {
+      let c_strings: Vec<CString> = self.extensions.iter()
+          .map(|s| CString::new(s.as_str()).expect("CString::new failed"))
+          .collect();
+
+      let mut c_ptrs: Vec<*const c_char> = c_strings.iter()
+          .map(|s| s.as_ptr())
+          .collect();
+
+      unsafe {
+        webui_set_extensions(
+          self.id,
+          c_ptrs.as_mut_ptr(),
+          c_ptrs.len()
+        );
+      }
     }
 
     pub fn show(&self, content: impl AsRef<str>) -> bool {
+        self.set_extensions();
         show(self.id, content.as_ref())
     }
 
     pub fn show_browser(&self, content: impl AsRef<str>, browser: WebUIBrowser) -> bool {
+        self.set_extensions();
         show_browser(self.id, content.as_ref(), browser)
     }
 
@@ -161,6 +205,17 @@ impl Window {
 
     pub fn destroy(&self) {
         destroy(self.id);
+    }
+
+    pub fn add_extension(&mut self, path: impl AsRef<str>) {
+      self.extensions.push(path.as_ref().to_string());
+    }
+
+    pub fn best_browser(&self) -> WebUIBrowser {
+      unsafe {
+        let browser = webui_get_best_browser(self.id);
+        WebUIBrowser::from_usize(browser)
+      }
     }
 }
 
