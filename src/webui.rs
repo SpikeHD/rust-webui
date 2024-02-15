@@ -50,7 +50,6 @@ pub enum WebUIBrowser {
     ChromiumBased,
 }
 
-// Implement into<usize>
 impl WebUIBrowser {
     pub fn from_usize(value: usize) -> WebUIBrowser {
         match value {
@@ -70,7 +69,26 @@ impl WebUIBrowser {
             _ => WebUIBrowser::NoBrowser,
         }
     }
+
+    pub fn to_usize(&self) -> usize {
+        match self {
+            WebUIBrowser::NoBrowser => 0,
+            WebUIBrowser::AnyBrowser => 1,
+            WebUIBrowser::Chrome => 2,
+            WebUIBrowser::Firefox => 3,
+            WebUIBrowser::Edge => 4,
+            WebUIBrowser::Safari => 5,
+            WebUIBrowser::Chromium => 6,
+            WebUIBrowser::Opera => 7,
+            WebUIBrowser::Brave => 8,
+            WebUIBrowser::Vivaldi => 9,
+            WebUIBrowser::Epic => 10,
+            WebUIBrowser::Yandex => 11,
+            WebUIBrowser::ChromiumBased => 12,
+        }
+    }
 }
+
 
 // Runtimes
 pub enum WebUIRuntime {
