@@ -50,50 +50,44 @@ pub enum WebUIBrowser {
     ChromiumBased,
 }
 
-impl WebUIBrowser {
-    pub fn from_usize(value: usize) -> WebUIBrowser {
-        match value {
-            0 => WebUIBrowser::NoBrowser,
-            1 => WebUIBrowser::AnyBrowser,
-            2 => WebUIBrowser::Chrome,
-            3 => WebUIBrowser::Firefox,
-            4 => WebUIBrowser::Edge,
-            5 => WebUIBrowser::Safari,
-            6 => WebUIBrowser::Chromium,
-            7 => WebUIBrowser::Opera,
-            8 => WebUIBrowser::Brave,
-            9 => WebUIBrowser::Vivaldi,
-            10 => WebUIBrowser::Epic,
-            11 => WebUIBrowser::Yandex,
-            12 => WebUIBrowser::ChromiumBased,
-            _ => WebUIBrowser::NoBrowser,
-        }
-    }
+impl Clone for WebUIBrowser {
+  fn clone(&self) -> Self {
+      *self
+  }
+}
 
-    pub fn to_usize(&self) -> usize {
-        match self {
-            WebUIBrowser::NoBrowser => 0,
-            WebUIBrowser::AnyBrowser => 1,
-            WebUIBrowser::Chrome => 2,
-            WebUIBrowser::Firefox => 3,
-            WebUIBrowser::Edge => 4,
-            WebUIBrowser::Safari => 5,
-            WebUIBrowser::Chromium => 6,
-            WebUIBrowser::Opera => 7,
-            WebUIBrowser::Brave => 8,
-            WebUIBrowser::Vivaldi => 9,
-            WebUIBrowser::Epic => 10,
-            WebUIBrowser::Yandex => 11,
-            WebUIBrowser::ChromiumBased => 12,
-        }
-    }
+impl Copy for WebUIBrowser {}
+
+impl WebUIBrowser {
+  pub fn to_usize(&self) -> usize {
+      *self as usize
+  }
+
+  pub fn from_usize(value: usize) -> WebUIBrowser {
+      match value {
+          0 => WebUIBrowser::NoBrowser,
+          1 => WebUIBrowser::AnyBrowser,
+          2 => WebUIBrowser::Chrome,
+          3 => WebUIBrowser::Firefox,
+          4 => WebUIBrowser::Edge,
+          5 => WebUIBrowser::Safari,
+          6 => WebUIBrowser::Chromium,
+          7 => WebUIBrowser::Opera,
+          8 => WebUIBrowser::Brave,
+          9 => WebUIBrowser::Vivaldi,
+          10 => WebUIBrowser::Epic,
+          11 => WebUIBrowser::Yandex,
+          12 => WebUIBrowser::ChromiumBased,
+          _ => WebUIBrowser::NoBrowser,
+      }
+  }
 }
 
 // Impl equality operator
 impl PartialEq for WebUIBrowser {
-    fn eq(&self, other: &Self) -> bool {
-        self.to_usize() == other.to_usize()
-    }
+  fn eq(&self, other: &Self) -> bool {
+      self.to_usize() == other.to_usize()
+  }
 }
 
 // Runtimes
