@@ -89,6 +89,12 @@ impl WebUIBrowser {
     }
 }
 
+// Impl equality operator
+impl PartialEq for WebUIBrowser {
+    fn eq(&self, other: &Self) -> bool {
+        self.to_usize() == other.to_usize()
+    }
+}
 
 // Runtimes
 pub enum WebUIRuntime {
